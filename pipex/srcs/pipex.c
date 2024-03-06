@@ -1,32 +1,26 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: dpetrosy <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/17 22:38:57 by dpetrosy          #+#    #+#             */
-/*   Updated: 2022/08/17 22:38:58 by dpetrosy         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
+#include <stdlib.h>
 #include "utils.h"
 #include "pipex.h"
-#include <unistd.h>
-#include <stdlib.h>
 
-int	**open_pipes(int argc)
+int	**open_pipes(int argc, t_fd *fds)
 {
 	int	**pipes;
 	int	i;
 
 	i = -1;
-	pipes = (int **)malloc(sizeof(int *) * (argc - 2));
+	pipes = (int **)malloc(sizeof(int *) * (argc - 1));
+	if (!pipes)
+		garbage_collector(fds, pipes);
+	pipes[argc - 2] = NULL;
 	while (++i < argc - 2)
+	{
 		pipes[i] = (int *)malloc(sizeof(int) * 2);
-	i = -1;
-	while (++i < argc - 2)
-		pipe(pipes[i]);
+		if (!pipes[i] || pipe(pipes[i]) < 0)
+		{
+			garbage_collector(fds, pipes);
+			error_message("\n[Pipe Opening ERROR]", 0);
+		}
+	}
 	return (pipes);
 }
 
@@ -98,11 +92,9 @@ char	**envp_parsing(char **envp)
 
 void	close_pipes(int **pipes, int i)
 {
-	while (i >= 0)
-	{
-		if (close(pipes[i][0]) == -1 ||
-				close(pipes[i][1]) == -1)
-			error_message("\n[Pipe Close ERROR]", 0);
-		i--;
-	}
+	int	i;
+
+	i = -1;
+	while (pipes[++i])
+		close_fd_pair(pipes[0], pipes[1]);
 }

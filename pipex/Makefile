@@ -1,35 +1,57 @@
-NAME		= pipex
-MKDIR		= mkdir -p
-CC			= cc
-INCLUDES 	= -Iincludes
-CFLAGS		= -Wall -Wextra -Werror -g
-SRCS_DIR	= sources
-SRCS		= $(wildcard sources/*.c) $(wildcard *.c)
-OBJS		= $(patsubst sources/%.c, objs/%.o,$(SRCS))
-OBJS_DIR	= objs
-RM			= rm -rf
+NAME			= pipex
+CC				= cc
+CFLAGS			= -Wall -Wextra -Werror
 
-.DEFAULT_GOAL = all
+LIBFT_DIR		= libft
+LIBFT_FLAGS		= -lft -L $(LIBFT_DIR)
 
-$(OBJS_DIR)/%.o: sources/%.c | $(OBJS_DIR)
-	@$(CC) $(CFLAGS) $(INCLUDES) -c  $< -o $@
+INCLUDES_DIR 	= includes
+INCLUDES_FLAG 	= -I$(INCLUDES_DIR) -I$(LIBFT_DIR)
+INCLUDES		= $(wildcard $(INCLUDES_DIR)/*.h) $(LIBFT_DIR)/libft.h
 
-$(OBJS_DIR):
+SRCS_DIR		= srcs
+SRCS			= $(wildcard $(SRCS_DIR)/*.c)
+OBJS_DIR		= objs
+OBJS			= $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
+
+MAKE			= make -sC
+MKDIR			= mkdir -p
+RM				= rm -rf
+
+RESET			= "\033[0m"
+BLACK    		= "\033[30m"    # Black
+RED      		= "\033[31m"    # Red
+GREEN    		= "\033[32m"    # Green
+YELLOW   		= "\033[33m"    # Yellow
+BLUE     		= "\033[34m"    # Blue
+MAGENTA  		= "\033[35m"    # Magenta
+CYAN     		= "\033[36m"    # Cyan
+WHITE    		= "\033[37m"    # White
+
+all : $(NAME)
+
+$(NAME) : $(OBJS)
+	@echo $(CYAN) " - Making libft..." $(RESET)
+	@$(MAKE) $(LIBFT_DIR)
+	@echo $(YELLOW) " - Made libft!" $(RESET)
+	@echo $(GREEN) " - Compiling $(NAME)..." $(RESET)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT_FLAGS) -o $(NAME)
+	@echo $(YELLOW) " - Compiling FINISHED" $(RESET)
+
+$(OBJS_DIR)/%.o : $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR)
+	@$(CC) $(CFLAGS) $(INCLUDES_FLAG) -c $< -o $@
+
+$(OBJS_DIR) :
 	@$(MKDIR) $(OBJS_DIR)
 
-all: $(NAME)
-
-$(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
-	@echo " \033[38;2;255;127;80m" "Done"
-
-clean:
-	@$(RM) $(OBJS)
+clean :
 	@$(RM) $(OBJS_DIR)
+	@echo $(RED) " - Cleaned!" $(RESET)
 
-fclean: clean
+fclean : clean
 	@$(RM) $(NAME)
-	@echo " \033[0;31m" "Clean up"
+	@$(MAKE) $(LIBFT_DIR) fclean
+	@echo $(RED) " - Full Cleaned!" $(RESET)
 
 re: fclean all
 

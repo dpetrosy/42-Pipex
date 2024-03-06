@@ -1,21 +1,20 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: dpetrosy <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/17 22:37:39 by dpetrosy          #+#    #+#             */
-/*   Updated: 2022/08/17 22:37:42 by dpetrosy         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "utils.h"
+typedef struct s_fd
+{
+	int	file_in;
+	int	file_out;
+}	t_fd;
 
-int		**open_pipes(int argc);
+typedef struct s_main_args
+{
+	int		argc;
+	char	**argv;
+	char	**envp;
+}	t_args;
+
+int		**open_pipes(int argc, t_fd *fds);
 void	pipex(int **pipes, t_args args);
 void	my_exec(char **cmd, char **envp);
 char	**envp_parsing(char **envp);
