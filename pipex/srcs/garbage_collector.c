@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   garbage_collector.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dapetros <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/07 01:22:15 by dapetros          #+#    #+#             */
+/*   Updated: 2024/03/07 01:22:37 by dapetros         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -23,7 +35,7 @@ void	close_pipes(int **pipes, int i)
 {
 	while (i >= 0)
 	{
-        close_fd_pair(pipes[i][0], pipes[i][1]);
+		close_fd_pair(pipes[i][0], pipes[i][1]);
 		--i;
 	}
 }
@@ -42,8 +54,7 @@ void	garbage_collector(t_fd *fds, int **pipes, char *text, int mode)
 	free(pipes);
 	pipes = NULL;
 	close_fd_pair(fds->file_in, fds->file_out);
-	if (mode != -1)
-		error_message(text, mode);
+	error_message(text, mode);
 }
 
 void	free_exec(char *operand, char **paths)

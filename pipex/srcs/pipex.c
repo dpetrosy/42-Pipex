@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dapetros <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/07 01:22:49 by dapetros          #+#    #+#             */
+/*   Updated: 2024/03/07 01:23:22 by dapetros         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include <unistd.h>
 #include "libft.h"
@@ -34,7 +46,11 @@ char	**envp_parsing(char **envp)
 		if (ft_strnstr(envp[i], "PATH=", 5))
 			break ;
 	envp_path = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
+	if (!envp_path)
+		return (NULL);
 	paths = ft_split(envp_path, ':');
+	if (!paths)
+		return (NULL);
 	free(envp_path);
 	return (paths);
 }
@@ -46,8 +62,10 @@ void	my_exec(char **cmd, char **envp)
 	char	*operand;
 	int		i;
 
-	paths = envp_parsing(envp);
 	i = -1;
+	paths = envp_parsing(envp);
+	if (!paths || !cmd)
+		return ;
 	while (paths[++i])
 	{
 		if (access(cmd[0], X_OK) == -1)
@@ -67,7 +85,7 @@ void	my_exec(char **cmd, char **envp)
 	error_message("[Access ERROR]", 0);
 }
 
-bool pipex(int **pipes, int argc, char **argv, char **envp)
+bool	pipex(int **pipes, int argc, char **argv, char **envp)
 {
 	pid_t	id;
 	int		i;
@@ -77,15 +95,15 @@ bool pipex(int **pipes, int argc, char **argv, char **envp)
 	{
 		id = fork();
 		if (id < 0)
-			return false;
+			return (false);
 		if (id == 0)
 		{
 			if (dup2(pipes[i][0], 0) < 0 ||
 					dup2(pipes[i + 1][1], 1) < 0)
-				return false;
+				return (false);
 			close_pipes(pipes, argc - 4);
 			my_exec(ft_split(argv[i + 2], ' '), envp);
 		}
 	}
-	return true;
+	return (true);
 }

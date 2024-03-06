@@ -10,7 +10,7 @@ INCLUDES_FLAG 	= -I$(INCLUDES_DIR) -I$(LIBFT_DIR)
 INCLUDES		= $(wildcard $(INCLUDES_DIR)/*.h) $(LIBFT_DIR)/libft.h
 
 SRCS_DIR		= srcs
-SRCS			= $(wildcard $(SRCS_DIR)/*.c)
+SRCS			= $(SRCS_DIR)/main.c $(SRCS_DIR)/pipex.c $(SRCS_DIR)/garbage_collector.c
 OBJS_DIR		= objs
 OBJS			= $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 
