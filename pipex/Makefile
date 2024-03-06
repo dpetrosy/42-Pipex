@@ -1,6 +1,6 @@
 NAME			= pipex
-CC				= cc
-CFLAGS			= -Wall -Wextra -Werror
+CC				= gcc
+CFLAGS			= -Wall -Wextra -Werror -g -fsanitize=address -fsanitize=undefined
 
 LIBFT_DIR		= libft
 LIBFT_FLAGS		= -lft -L $(LIBFT_DIR)
@@ -55,4 +55,6 @@ fclean : clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+bonus : all
+
+.PHONY: all clean fclean re bonus

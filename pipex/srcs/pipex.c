@@ -1,8 +1,10 @@
 #include <stdlib.h>
-#include "utils.h"
+#include <unistd.h>
+#include "libft.h"
 #include "pipex.h"
+#include "garbage_collector.h"
 
-int	**open_pipes(int argc, t_fd *fds)
+int	**open_pipes(t_fd *fds, int argc)
 {
 	int	**pipes;
 	int	i;
@@ -10,40 +12,31 @@ int	**open_pipes(int argc, t_fd *fds)
 	i = -1;
 	pipes = (int **)malloc(sizeof(int *) * (argc - 1));
 	if (!pipes)
-		garbage_collector(fds, pipes);
+		garbage_collector(fds, pipes, "[Malloc ERROR]\n", 1);
 	pipes[argc - 2] = NULL;
 	while (++i < argc - 2)
 	{
 		pipes[i] = (int *)malloc(sizeof(int) * 2);
 		if (!pipes[i] || pipe(pipes[i]) < 0)
-		{
-			garbage_collector(fds, pipes);
-			error_message("\n[Pipe Opening ERROR]", 0);
-		}
+			garbage_collector(fds, pipes, "[Pipe Opening ERROR]\n", 1);
 	}
 	return (pipes);
 }
 
-void	pipex(int **pipes, t_args args)
+char	**envp_parsing(char **envp)
 {
-	pid_t	id;
+	char	*envp_path;
+	char	**paths;
 	int		i;
 
 	i = -1;
-	while (++i < args.argc - 3)
-	{
-		id = fork();
-		if (id == -1)
-			error_message("\n[Fork ERROR]", 0);
-		if (id == 0)
-		{
-			if (dup2(pipes[i][0], 0) == -1 ||
-					dup2(pipes[i + 1][1], 1) == -1)
-				error_message("\n[Dup ERROR]", 0);
-			close_pipes(pipes, args.argc - 4);
-			my_exec(ft_split(args.argv[i + 2], ' '), args.envp);
-		}
-	}
+	while (envp[++i])
+		if (ft_strnstr(envp[i], "PATH=", 5))
+			break ;
+	envp_path = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
+	paths = ft_split(envp_path, ':');
+	free(envp_path);
+	return (paths);
 }
 
 void	my_exec(char **cmd, char **envp)
@@ -74,27 +67,25 @@ void	my_exec(char **cmd, char **envp)
 	error_message("[Access ERROR]", 0);
 }
 
-char	**envp_parsing(char **envp)
+bool pipex(int **pipes, int argc, char **argv, char **envp)
 {
-	char	*envp_path;
-	char	**paths;
+	pid_t	id;
 	int		i;
 
 	i = -1;
-	while (envp[++i])
-		if (ft_strnstr(envp[i], "PATH=", 5))
-			break ;
-	envp_path = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
-	paths = ft_split(envp_path, ':');
-	free(envp_path);
-	return (paths);
-}
-
-void	close_pipes(int **pipes, int i)
-{
-	int	i;
-
-	i = -1;
-	while (pipes[++i])
-		close_fd_pair(pipes[0], pipes[1]);
+	while (++i < argc - 3)
+	{
+		id = fork();
+		if (id < 0)
+			return false;
+		if (id == 0)
+		{
+			if (dup2(pipes[i][0], 0) < 0 ||
+					dup2(pipes[i + 1][1], 1) < 0)
+				return false;
+			close_pipes(pipes, argc - 4);
+			my_exec(ft_split(argv[i + 2], ' '), envp);
+		}
+	}
+	return true;
 }

@@ -1,23 +1,17 @@
 #ifndef PIPEX_H
 # define PIPEX_H
 
+#include <stdbool.h>
+
 typedef struct s_fd
 {
 	int	file_in;
 	int	file_out;
 }	t_fd;
 
-typedef struct s_main_args
-{
-	int		argc;
-	char	**argv;
-	char	**envp;
-}	t_args;
-
-int		**open_pipes(int argc, t_fd *fds);
-void	pipex(int **pipes, t_args args);
-void	my_exec(char **cmd, char **envp);
+int		**open_pipes(t_fd *fds, int argc);
 char	**envp_parsing(char **envp);
-void	close_pipes(int **pipes, int i);
+void	my_exec(char **cmd, char **envp);
+bool	pipex(int **pipes, int argc, char **argv, char **envp);
 
 #endif	/* PIPEX_H */
