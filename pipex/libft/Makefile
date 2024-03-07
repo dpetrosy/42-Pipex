@@ -1,6 +1,6 @@
 NAME			= libft.a
 CC				= cc
-CFLAGS			= -Wall -Wextra -Werror -g -fsanitize=address -fsanitize=undefined 
+CFLAGS			= -Wall -Wextra -Werror
 MKDIR			= mkdir -p
 AR				= ar
 ARFLAGS			= -rcs

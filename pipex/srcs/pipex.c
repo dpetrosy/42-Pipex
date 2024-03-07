@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <unistd.h>
 #include "libft.h"
 #include "pipex.h"
 #include "garbage_collector.h"
@@ -55,33 +53,50 @@ char	**envp_parsing(char **envp)
 	return (paths);
 }
 
+void	do_execve(int i, char **cmd, char **paths, char **envp)
+{
+	char	*binary;
+	char	*operand;
+
+	if (access(cmd[0], X_OK) == -1)
+	{
+		binary = ft_strjoin(paths[i], "/");
+		if (!binary)
+			error_message("[Malloc ERROR]\n", 1);
+		operand = ft_strjoin(binary, cmd[0]);
+		if (!operand)
+			error_message("[Malloc ERROR]\n", 1);
+		free(binary);
+		if (access(operand, X_OK) == -1)
+		{
+			free(operand);
+			return ;
+		}
+		free_exec(NULL, NULL, paths);
+		execve(operand, cmd, envp);
+		free_exec(operand, cmd, NULL);
+		error_message("[Execve ERROR]", 0);
+	}
+	free_exec(NULL, NULL, paths);
+	execve(cmd[0], cmd, envp);
+	error_message("[Execve ERROR]", 0);
+}
+
 void	my_exec(char **cmd, char **envp)
 {
 	char	**paths;
-	char	*binary;
-	char	*operand;
 	int		i;
 
 	i = -1;
 	paths = envp_parsing(envp);
 	if (!paths || !cmd)
-		return ;
-	while (paths[++i])
 	{
-		if (access(cmd[0], X_OK) == -1)
-		{
-			binary = ft_strjoin(paths[i], "/");
-			operand = ft_strjoin(binary, cmd[0]);
-			free(binary);
-			if (access(operand, X_OK) == -1)
-				continue ;
-			execve(operand, cmd, envp);
-			error_message("[Execve ERROR]", 0);
-		}
-		execve(cmd[0], cmd, envp);
-		error_message("[Execve ERROR]", 0);
+		free_exec(NULL, cmd, paths);
+		error_message("[Malloc ERROR]\n", 1);
 	}
-	free_exec(operand, paths);
+	while (paths[++i])
+		do_execve(i, cmd, paths, envp);
+	free_exec(NULL, cmd, paths);
 	error_message("[Access ERROR]", 0);
 }
 

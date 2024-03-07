@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <unistd.h>
 #include <stdio.h>
 #include "libft.h"
 #include "pipex.h"
@@ -27,8 +25,8 @@ void	error_message(char *text, int mode)
 
 void	close_fd_pair(int fd1, int fd2)
 {
-	if (close(fd1) < 0 || close(fd2) < 0)
-		error_message("[FD Close ERROR]\n", 1);
+	close(fd1);
+	close(fd2);
 }
 
 void	close_pipes(int **pipes, int i)
@@ -57,13 +55,23 @@ void	garbage_collector(t_fd *fds, int **pipes, char *text, int mode)
 	error_message(text, mode);
 }
 
-void	free_exec(char *operand, char **paths)
+void	free_exec(char *operand, char **cmd, char **paths)
 {
 	int	i;
 
 	i = -1;
 	free(operand);
-	while (paths[++i])
-		free(paths[i]);
-	free(paths);
+	if (cmd)
+	{
+		while (cmd[++i])
+			free(cmd[i]);
+		free(cmd);
+	}
+	i = -1;
+	if (paths)
+	{
+		while (paths[++i])
+			free(paths[i]);
+		free(paths);
+	}
 }
