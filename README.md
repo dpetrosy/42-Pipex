@@ -88,7 +88,7 @@ $ cd path/to/pipex && make
 
 **2. How to run the program**
 
-Run the executable with some commands of your choice:
+Run the executable with commands of your choice:
 ```shell
 ./pipex input "cat" "wc -l" output
 ```
