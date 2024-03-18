@@ -42,8 +42,8 @@
 
 For detailed information, refer to the [**subject of this project**](README_files/pipex_subject.pdf).
 
-	🚀 TLDR: Pipex is a 42 School project aimed to better understand shell redirection and pipes,
-                 by handling them in C.
+	🚀 TLDR: Pipex is a 42 School project aimed to better understand shell redirection and 
+ 		 pipes, by handling them in C.
 
 ## 🔷 Mandatory Part
 
