@@ -83,7 +83,7 @@ The program is written in C language and thus needs the **gcc compiler** and som
 To compile the program, run:
 
 ```shell
-$ cd path/to/push_swap && make
+$ cd path/to/pipex && make
 ```
 
 **2. How to run the program**
