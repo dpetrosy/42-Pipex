@@ -40,7 +40,7 @@
 
 > This pipex program takes an input file, performs a command on it, pipes the result to another command which then writes its result to an output file. The result is virtually identical to this kind of shell command.
 
-For detailed information, refer to the [**subject of this project**](README_files/push_swap_subject.pdf).
+For detailed information, refer to the [**subject of this project**](README_files/pipex_subject.pdf).
 
 	🚀 TLDR: Pipex is a 42 School project aimed to better understand shell redirection and pipes,
            by handling them in C.
