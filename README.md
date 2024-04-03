@@ -1,4 +1,4 @@
-<a name="readme-top"></a>
+b<a name="readme-top"></a>
 <div align="center">
   <!-- Logo -->
   <a href="https://github.com/dpetrosy/42-Pipex">
@@ -44,6 +44,12 @@ For detailed information, refer to the [**subject of this project**](README_file
 
 	🚀 TLDR: Pipex is a 42 School project aimed to better understand shell redirection and 
  		 pipes, by handling them in C.
+
+> [!NOTE]  
+> Because of 42 School norm requirements:
+> * Each function can't have more than 25 lines of code.
+> * All variables are declared and aligned at the top of each function.
+> * Project should be created just with allowed functions otherwise it's cheating.
 
 ## 🔷 Mandatory Part
 
